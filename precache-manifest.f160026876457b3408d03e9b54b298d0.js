@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "2483252eb6e295e1694c",
+    "revision": "dd4972e56e46a60ad6e9",
     "url": "/myswap/static/css/main.1cb04d8c.chunk.css"
   },
   {
-    "revision": "2483252eb6e295e1694c",
-    "url": "/myswap/static/js/main.2483252e.chunk.js"
+    "revision": "dd4972e56e46a60ad6e9",
+    "url": "/myswap/static/js/main.dd4972e5.chunk.js"
   },
   {
     "revision": "519e6f84b095aff19cbb",
@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/myswap/static/js/runtime~main.0fbb4ed9.js"
   },
   {
-    "revision": "4e988ef48802342a05db9efc8eb69a1b",
+    "revision": "cc4d13fd928b680b87726ecbff7e872f",
     "url": "/myswap/index.html"
   }
 ];
