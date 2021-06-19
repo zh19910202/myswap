@@ -136,16 +136,21 @@ class App extends Component {
     let value = this.state.buytoken / 100
     value = window.web3.utils.toWei(String(value),'ether')
     try{
-        const res = await this.state.swap.methods.buyToekn().send({ from: this.state.account, value: value })
-      if (res.status === true) {
-        console.log(res)
+        this.state.swap.methods.buyToekn().send({ from: this.state.account, value: value })
+        .on('error', console.error)
+        .on('transactionHash',(transactionHash)=>{
+          console.log(transactionHash)
+          this.getCurrentBalanceOfToekn()
+        })
+        .on('receipt', function(receipt){
+          console.log(receipt)
+          this.getCurrentBalanceOfToekn()
+        })
         this.setState({buytoken:""})
-        this.getCurrentBalanceOfToekn()
-      }  
-    }catch(e){
-      console.log(e)
-    }
-    
+      }catch(e){
+        console.log(e)
+      }
+      
     
   }
   //卖掉token
@@ -162,8 +167,12 @@ class App extends Component {
         this.state.swap.methods.sellToken(value).send({ from: this.state.account })
         .on('error', console.error)
         .on('transactionHash',(transactionHash)=>{console.log('transactionHash:',transactionHash)})
+        .on('receipt', function(receipt){
+          console.log(receipt)
+          this.getCurrentBalanceOfToekn()
+        })
       })
-      
+      this.getCurrentBalanceOfToekn()
     }catch(e){
       console.log(e)
     }
