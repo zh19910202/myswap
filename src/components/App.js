@@ -133,34 +133,41 @@ class App extends Component {
   }
   // 购买token
   buyDai = async () => {
-    let value = this.state.buytoken
-    value = window.web3.utils.toWei(value,'ether')
-    const res = await this.state.swap.methods.buyToekn().send({ from: this.state.account, value: value })
-    if (res.status === true) {
-      console.log(res)
-      this.setState({buytoken:""})
-      this.getCurrentBalanceOfToekn()
+    let value = this.state.buytoken / 100
+    value = window.web3.utils.toWei(String(value),'ether')
+    try{
+        const res = await this.state.swap.methods.buyToekn().send({ from: this.state.account, value: value })
+      if (res.status === true) {
+        console.log(res)
+        this.setState({buytoken:""})
+        this.getCurrentBalanceOfToekn()
+      }  
+    }catch(e){
+      console.log(e)
     }
+    
+    
   }
   //卖掉token
   sellDai = async () => {
     //授权
-    let value = this.state.selltoken
+    let value = this.state.selltoken 
     value = window.web3.utils.toWei(value,'ether')
-    let res = await this.state.dappToken.methods.approve(this.state.swapAddress, value).send({ from: this.state.account })
-    
-    if (res.status === true) {
-      //console.log(res)
-      res = await this.state.swap.methods.sellToken(value).send({ from: this.state.account })
-      if (res.status === true) {
-        console.log(res)
-        this.setState({selltoken:""})
-        this.getCurrentBalanceOfToekn()
-      }
+    try{
+      
+      this.state.dappToken.methods.approve(this.state.swapAddress, value).send({ from: this.state.account })
+      .on('error', console.error)
+      .on('transactionHash',(transactionHash)=>{
+        console.log('transactionHash:',transactionHash) 
+        this.state.swap.methods.sellToken(value).send({ from: this.state.account })
+        .on('error', console.error)
+        .on('transactionHash',(transactionHash)=>{console.log('transactionHash:',transactionHash)})
+      })
+      
+    }catch(e){
+      console.log(e)
     }
-   
-    
-  
+       
   }
   
   //转账token
