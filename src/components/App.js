@@ -136,15 +136,16 @@ class App extends Component {
     let value = this.state.buytoken / 100
     value = window.web3.utils.toWei(String(value),'ether')
     try{
+        const that = this
         this.state.swap.methods.buyToekn().send({ from: this.state.account, value: value })
         .on('error', console.error)
         .on('transactionHash',(transactionHash)=>{
           console.log(transactionHash)
-          this.getCurrentBalanceOfToekn()
         })
         .on('receipt', function(receipt){
           console.log(receipt)
-          this.getCurrentBalanceOfToekn()
+          that.getCurrentBalanceOfToekn()
+          that.getCurrentBalanceOf()
         })
         this.setState({buytoken:""})
       }catch(e){
@@ -159,24 +160,25 @@ class App extends Component {
     let value = this.state.selltoken 
     value = window.web3.utils.toWei(value,'ether')
     try{
-      
+      const that = this
       this.state.dappToken.methods.approve(this.state.swapAddress, value).send({ from: this.state.account })
       .on('error', console.error)
       .on('transactionHash',(transactionHash)=>{
-        console.log('transactionHash:',transactionHash) 
+        console.log('transactionHash:',transactionHash)
         this.state.swap.methods.sellToken(value).send({ from: this.state.account })
         .on('error', console.error)
         .on('transactionHash',(transactionHash)=>{console.log('transactionHash:',transactionHash)})
         .on('receipt', function(receipt){
           console.log(receipt)
-          this.getCurrentBalanceOfToekn()
-        })
+          that.getCurrentBalanceOfToekn()
+          that.getCurrentBalanceOf()
+        }) 
       })
-      this.getCurrentBalanceOfToekn()
+      that.setState({selltoken:""}) 
     }catch(e){
       console.log(e)
     }
-       
+      
   }
   
   //转账token
@@ -184,11 +186,13 @@ class App extends Component {
     //console.log(this.state.transaccount,this.state.transfertoken)
     let value = this.state.transfertoken
     value = window.web3.utils.toWei(value,'ether')
-    const res = await this.state.dappToken.methods.transfer(this.state.transaccount,value).send({ from: this.state.account})
-    if (res.status === true) {
-      console.log(res)
+    this.state.dappToken.methods.transfer(this.state.transaccount,value).send({ from: this.state.account})
+    .on('error', console.error)
+    .on('transactionHash',(transactionHash)=>{console.log('transactionHash:',transactionHash)})
+    .on('receipt', function(receipt){
+      console.log(receipt)
       this.getCurrentBalanceOfToekn()
-    }
+     })   
 }
 
   render() {
